@@ -1,0 +1,31 @@
+# Local test only (not used by Railway).
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: shlink, POSTGRES_PASSWORD: localtestpw, POSTGRES_DB: shlink }
+    volumes: [pg:/var/lib/postgresql/data]
+    labels: { her: "2226" }
+  shlink:
+    build: ./shlink
+    environment:
+      PORT: "8080"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: shlink
+      DB_USER: shlink
+      DB_PASSWORD: localtestpw
+      DEFAULT_DOMAIN: s.example.test
+      INITIAL_API_KEY: ${KEY}
+    depends_on: [postgres]
+    ports: ["8080"]
+    labels: { her: "2226" }
+  web:
+    build: ./web-client
+    environment:
+      PORT: "8081"
+      WEB_PASSWORD: ${PW}
+      SHLINK_SERVER_URL: http://localhost:8080
+      SHLINK_SERVER_API_KEY: ${KEY}
+    ports: ["8081"]
+    labels: { her: "2226" }
+volumes: { pg: {} }

@@ -1,0 +1,44 @@
+# Based on shlink-web-client's config/docker/nginx.conf (v4.9.0), plus basic auth
+# and a public health path for Railway.
+server {
+    listen __PORT__ default_server;
+    listen [::]:__PORT__ default_server;
+    charset utf-8;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    auth_basic "Shlink";
+    auth_basic_user_file /etc/shlink-railway/run/htpasswd;
+
+    # Railway health check, open without login.
+    location = /healthz {
+        auth_basic off;
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+       expires -1;
+    }
+    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        expires 1M;
+        add_header Cache-Control "private";
+    }
+    location ~* \.(?:css|js)$ {
+        expires 1y;
+        add_header Cache-Control "private";
+    }
+
+    location = /servers.json {
+        add_header Cache-Control "no-store";
+        try_files /servers.json /conf.d/servers.json;
+    }
+
+    location ~* .+\.(css|js|html|png|jpe?g|gif|bmp|ico|json|csv|otf|eot|svg|svgz|ttf|woff|woff2|ijmap|pdf|tif|map) {
+        try_files $uri $uri/ =404;
+    }
+    location / {
+        try_files $uri $uri/ /index.html$is_args$args;
+    }
+}
