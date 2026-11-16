@@ -8,9 +8,12 @@ USER root
 # web client must sit behind a login.
 COPY default.conf.template /etc/shlink-railway/default.conf.template
 COPY 25-railway-auth.sh /docker-entrypoint.d/25-railway-auth.sh
-RUN chmod +x /docker-entrypoint.d/25-railway-auth.sh \
-    && mkdir -p /etc/shlink-railway/run \
-    && chown -R 101:0 /etc/shlink-railway /etc/nginx/conf.d \
-    && rm -f /etc/nginx/conf.d/default.conf
+# The generated site config and password file live in /tmp, which is always
+# writable whatever user the platform runs the container as.
+RUN chmod 755 /docker-entrypoint.d/25-railway-auth.sh \
+    && chmod 644 /etc/shlink-railway/default.conf.template \
+    && rm -f /etc/nginx/conf.d/default.conf \
+    && ln -s /tmp/shlink-railway/default.conf /etc/nginx/conf.d/default.conf \
+    && ln -sf /tmp/shlink-railway/servers.json /usr/share/nginx/html/servers.json
 
 USER 101
