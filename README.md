@@ -1,3 +1,5 @@
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/shlink-1?utm_medium=integration&utm_source=button&utm_campaign=shlink)
+
 # Shlink on Railway
 
 A Railway template for [Shlink](https://shlink.io), the self-hosted URL shortener with a REST API, visit tracking and QR codes, plus the official [Shlink Web Client](https://shlink.io/documentation/shlink-web-client/) to manage it.

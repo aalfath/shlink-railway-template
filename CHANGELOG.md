@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-16: Deploy on Railway button
+
+- README: added the Deploy on Railway button for the published template `shlink-1`. No change to the services.
+
 ## 2026-11-16: Shlink 5.1.8, Shlink Web Client 4.9.0
 
 First version of the template.
